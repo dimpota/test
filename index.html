@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Μετρήσεις · GitHub Pages</title>
+    <style>
+        body { font-family: Segoe UI, Arial, sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; padding: 20px; }
+        h1 { color: #58a6ff; font-size: 24px; }
+        table { border-collapse: collapse; width: 100%; max-width: 600px; background: #161b22; }
+        th, td { border: 1px solid #30363d; padding: 10px; text-align: center; }
+        th { background: #21262d; color: #8b949e; }
+        #status { color: #8b949e; font-size: 14px; margin-top: 12px; }
+        .voltage { color: #7ee787; font-weight: bold; }
+        .power { color: #d29922; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>⚡ Μετρήσεις</h1>
+    <table>
+        <thead>
+            <tr><th>#</th><th>Voltage (V)</th><th>Power (W)</th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+    </table>
+    <div id="status">Φορτώνω...</div>
+
+    <script>
+        // Το ίδιο fetch που μάθαμε — μόνο που τώρα διαβάζει
+        const URL = "https://raw.githubusercontent.com/dimpota/test/main/data.json"
+
+        // 5. Διάβασε + ζωγράφισε
+        async function refresh() {
+            try {
+                const res = await fetch(URL)
+                const data = await res.json()
+
+                const tbody = document.getElementById("rows")
+                tbody.innerHTML = ""
+
+                data.forEach((m, i) => {
+                    const tr = document.createElement("tr")
+                    tr.innerHTML = `
+                        <td>${i + 1}</td>
+                        <td class="voltage">${m.voltage}</td>
+                        <td class="power">${m.power}</td>`
+                    tbody.appendChild(tr)
+                })
+
+                document.getElementById("status").textContent =
+                    "Ενημερώθηκε: " + new Date().toLocaleTimeString("el-GR")
+            } catch (e) {
+                document.getElementById("status").textContent = "Σφάλμα: " + e.message
+            }
+        }
+
+        // 6. Κάθε 2 δευτερόλεπτα
+        setInterval(refresh, 2000)
+        refresh()
+    </script>
+</body>
+</html>
