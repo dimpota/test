@@ -1,9 +1,5 @@
 [
   {
-    "voltage": 227,
-    "power": 129
-  },
-  {
     "voltage": 237,
     "power": 464
   },
@@ -38,5 +34,9 @@
   {
     "voltage": 228,
     "power": 464
+  },
+  {
+    "voltage": 221,
+    "power": 174
   }
 ]
