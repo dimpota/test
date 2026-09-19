@@ -14,5 +14,9 @@
   {
     "voltage": 234,
     "power": 206
+  },
+  {
+    "voltage": 231,
+    "power": 107
   }
 ]
