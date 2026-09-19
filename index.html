@@ -26,37 +26,39 @@
     <div id="status">Φορτώνω...</div>
 
     <script>
-        // Το raw URL δεν περνάει από το 10λεπτο cache του GitHub Pages
-        const URL = "https://raw.githubusercontent.com/dimpota/test/main/data.json"
+        const URL = "https://githubusercontent.com";
 
-        // 5. Διάβασε + ζωγράφισε
+        // Διάβασε + ζωγράφισε (Με Cache-Buster για Real-Time)
         async function refresh() {
             try {
-                const res = await fetch(URL, { cache: "no-store" })
-                const data = await res.json()
+                // Προσθήκη μοναδικού timestamp (?t=...) για να σπάει η cache του GitHub σε κάθε fetch
+                const liveURL = `${URL}?t=${Date.now()}`;
 
-                const tbody = document.getElementById("rows")
-                tbody.innerHTML = ""
+                const res = await fetch(liveURL, { cache: "no-store" });
+                const data = await res.json();
+
+                const tbody = document.getElementById("rows");
+                tbody.innerHTML = "";
 
                 data.forEach((m, i) => {
-                    const tr = document.createElement("tr")
+                    const tr = document.createElement("tr");
                     tr.innerHTML = `
                         <td>${i + 1}</td>
                         <td class="voltage">${m.voltage}</td>
-                        <td class="power">${m.power}</td>`
-                    tbody.appendChild(tr)
-                })
+                        <td class="power">${m.power}</td>`;
+                    tbody.appendChild(tr);
+                });
 
                 document.getElementById("status").textContent =
-                    "Ενημερώθηκε: " + new Date().toLocaleTimeString("el-GR")
+                    "Ενημερώθηκε: " + new Date().toLocaleTimeString("el-GR");
             } catch (e) {
-                document.getElementById("status").textContent = "Σφάλμα: " + e.message
+                document.getElementById("status").textContent = "Σφάλμα: " + e.message;
             }
         }
 
-        // 6. Κάθε 2 δευτερόλεπτα
-        setInterval(refresh, 2000)
-        refresh()
+        // Εκτέλεση κάθε 2 δευτερόλεπτα
+        setInterval(refresh, 2000);
+        refresh();
     </script>
 </body>
 </html>
