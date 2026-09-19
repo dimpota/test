@@ -26,13 +26,13 @@
     <div id="status">Φορτώνω...</div>
 
     <script>
-        // Το ίδιο fetch που μάθαμε — μόνο που τώρα διαβάζει
-        const URL = "https://dimpota.github.io/test/data.json?t=" + Date.now()
+        // Το raw URL δεν περνάει από το 10λεπτο cache του GitHub Pages
+        const URL = "https://raw.githubusercontent.com/dimpota/test/main/data.json"
 
         // 5. Διάβασε + ζωγράφισε
         async function refresh() {
             try {
-                const res = await fetch(URL)
+                const res = await fetch(URL, { cache: "no-store" })
                 const data = await res.json()
 
                 const tbody = document.getElementById("rows")
