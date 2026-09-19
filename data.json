@@ -1,22 +1,6 @@
 [
   {
-    "voltage": 232,
-    "power": 281
-  },
-  {
-    "voltage": 234,
-    "power": 274
-  },
-  {
-    "voltage": 240,
-    "power": 162
-  },
-  {
-    "voltage": 220,
-    "power": 421
-  },
-  {
-    "voltage": 238,
-    "power": 400
+    "voltage": 226,
+    "power": 308
   }
 ]
