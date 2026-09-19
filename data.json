@@ -1,42 +1,6 @@
 [
   {
-    "voltage": 238,
-    "power": 156
-  },
-  {
-    "voltage": 228,
-    "power": 475
-  },
-  {
-    "voltage": 235,
-    "power": 260
-  },
-  {
-    "voltage": 228,
-    "power": 461
-  },
-  {
-    "voltage": 224,
-    "power": 157
-  },
-  {
-    "voltage": 227,
-    "power": 301
-  },
-  {
-    "voltage": 221,
-    "power": 119
-  },
-  {
-    "voltage": 225,
-    "power": 465
-  },
-  {
-    "voltage": 224,
-    "power": 180
-  },
-  {
-    "voltage": 227,
-    "power": 456
+    "voltage": 222,
+    "power": 188
   }
 ]
