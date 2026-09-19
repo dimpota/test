@@ -34,5 +34,9 @@
   {
     "voltage": 221,
     "power": 119
+  },
+  {
+    "voltage": 225,
+    "power": 465
   }
 ]
