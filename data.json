@@ -6,5 +6,9 @@
   {
     "voltage": 236,
     "power": 246
+  },
+  {
+    "voltage": 225,
+    "power": 435
   }
 ]
