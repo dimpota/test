@@ -17,6 +17,8 @@
     th { background: #222; color: #fd0; }
     canvas { display: block; margin: 20px auto; background: #1e1e1e; border-radius: 12px; max-width: 100%; }
     #status { text-align: center; color: #6f6; font-size: 13px; }
+    #btnRefresh { display: block; margin: 10px auto; padding: 10px 18px; font-size: 15px; background: #1e88e5; color: #fff; border: 0; border-radius: 8px; cursor: pointer; }
+    #btnRefresh:disabled { opacity: .5; cursor: default; }
 </style>
 </head>
 <body>
@@ -32,6 +34,7 @@
     </div>
 </div>
 <div id="status">Ï†ÏŒÏÏ„Ï‰ÏƒÎ·â€¦</div>
+<button id="btnRefresh" onclick="manualRefresh()">Î–Ï‰Î½Ï„Î±Î½Î® ÎµÎ½Î·Î¼Î­ÏÏ‰ÏƒÎ· (API)</button>
 <canvas id="chart" width="640" height="220"></canvas>
 <table>
     <thead>
@@ -118,6 +121,42 @@ function drawLine(ctx, values, color, label) {
     ctx.fillStyle = color
     ctx.font = "13px Arial"
     ctx.fillText(label, ctx.canvas.width - 70, 16)
+}
+
+async function manualRefresh() {
+    const btn = document.getElementById("btnRefresh")
+    btn.disabled = true
+    const res = await fetch("https://api.github.com/repos/dimpota/test/contents/data.json", {
+        headers: {
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "live-iot-page"
+        }
+    })
+    if (res.status === 403) {
+        statusEl.textContent = "API rate limit reached â€” Î´Î¿ÎºÎ¯Î¼Î±ÏƒÎµ Î¾Î±Î½Î¬ ÏƒÎµ Î»Î¯Î³Î¿ (60/h)"
+        btn.disabled = false
+        return
+    }
+    if (!res.ok) {
+        statusEl.textContent = "API error " + res.status
+        btn.disabled = false
+        return
+    }
+    const data = await res.json()
+    const txt = atob(data.content)
+    let parsed
+    try {
+        parsed = JSON.parse(txt)
+    } catch (e) {
+        statusEl.textContent = "parse error"
+        btn.disabled = false
+        return
+    }
+    all = Array.isArray(parsed) ? parsed : []
+    last = all.slice(-LIMIT)
+    render()
+    statusEl.textContent += " â€” LIVE refresh " + new Date().toLocaleTimeString("el-GR")
+    setTimeout(function () { btn.disabled = false }, 1000)
 }
 
 setInterval(fetchData, 1000)
