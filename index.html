@@ -6,17 +6,33 @@
 <title>Live IoT Data — Voltage / Power</title>
 <style>
     body { font-family: Arial, sans-serif; background: #111; color: #eee; margin: 0; padding: 20px; }
-    .wrap { max-width: 960px; margin: 0 auto; }
+    .wrap { max-width: 720px; margin: 0 auto; }
     h1 { text-align: center; }
-    .chartBox { background: #1e1e1e; border-radius: 12px; padding: 14px; }
-    canvas { display: block; width: 100%; height: auto; }
+    .cards { display: flex; justify-content: center; gap: 24px; margin: 40px 0 20px; flex-wrap: wrap; }
+    .card { background: #1e1e1e; border-radius: 14px; padding: 26px 40px; text-align: center; min-width: 220px; box-shadow: 0 0 0 1px #333 inset; }
+    .card .label { color: #999; font-size: 15px; margin-bottom: 8px; }
+    .card .value { font-size: 56px; font-weight: bold; }
+    .card .unit { color: #999; font-size: 20px; margin-left: 4px; }
+    .card.voltage .value { color: #4fc3f7; }
+    .card.power .value { color: #ffb74d; }
+    #status { text-align: center; color: #6f6; font-size: 13px; min-height: 18px; }
 </style>
 </head>
 <body>
 <div class="wrap">
     <h1>Live IoT Data</h1>
-    <div class="chartBox"><canvas id="chart" width="960" height="460"></canvas></div>
+    <div class="cards">
+        <div class="card voltage">
+            <div class="label">Voltage</div>
+            <div><span id="voltage" class="value">--</span><span class="unit">V</span></div>
+        </div>
+        <div class="card power">
+            <div class="label">Power</div>
+            <div><span id="power" class="value">--</span><span class="unit">W</span></div>
+        </div>
+    </div>
+    <div id="status">φόρτωση…</div>
 </div>
-<script src="./app.js?v=5"></script>
+<script src="./app.js?v=6"></script>
 </body>
 </html>
