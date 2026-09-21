@@ -1,36 +1,36 @@
-const TAGO_API = "https://api.eu-w1.tago.io"
-const PAGE_TOKEN = "042ee4ac-4e45-4c6f-ae0d-0df638b72f68"
+const tagoApi = "https://api.eu-w1.tago.io"
+const pageToken = "042ee4ac-4e45-4c6f-ae0d-0df638b72f68"
 
-const voltageEl = document.getElementById("voltage")
-const powerEl = document.getElementById("power")
-const statusEl = document.getElementById("status")
+const voltageElement = document.getElementById("voltage")
+const powerElement = document.getElementById("power")
+const statusElement = document.getElementById("status")
 
-let busy = false
+let requestInProgress = false
 
-async function fetchLatest() {
-    if (busy) return
-    busy = true
+async function fetchLatestValues() {
+    if (requestInProgress) return
+    requestInProgress = true
     try {
-        const headers = { "Device-Token": PAGE_TOKEN }
-        const [v, p] = await Promise.all([
-            fetch(TAGO_API + "/data?variable=voltage&query=last_item", { headers }).then(r => r.json()),
-            fetch(TAGO_API + "/data?variable=power&query=last_item", { headers }).then(r => r.json())
+        const requestHeaders = { "Device-Token": pageToken }
+        const [voltageResult, powerResult] = await Promise.all([
+            fetch(tagoApi + "/data?variable=voltage&query=last_item", { headers: requestHeaders }).then(response => response.json()),
+            fetch(tagoApi + "/data?variable=power&query=last_item", { headers: requestHeaders }).then(response => response.json())
         ])
 
-        if (!v.status || !p.status || !v.result || !p.result || !v.result[0] || !p.result[0]) {
-            statusEl.textContent = "περιμένω δεδομένα από το TagoIO…"
+        if (!voltageResult.status || !powerResult.status || !voltageResult.result || !powerResult.result || !voltageResult.result[0] || !powerResult.result[0]) {
+            statusElement.textContent = "περιμένω δεδομένα από το TagoIO…"
             return
         }
 
-        voltageEl.textContent = Number(v.result[0].value)
-        powerEl.textContent = Number(p.result[0].value)
-        statusEl.textContent = "updated " + new Date().toLocaleTimeString("el-GR")
-    } catch (e) {
-        statusEl.textContent = "TagoIO unreachable"
+        voltageElement.textContent = Number(voltageResult.result[0].value)
+        powerElement.textContent = Number(powerResult.result[0].value)
+        statusElement.textContent = "updated " + new Date().toLocaleTimeString()
+    } catch (error) {
+        statusElement.textContent = "TagoIO unreachable"
     } finally {
-        busy = false
+        requestInProgress = false
     }
 }
 
-setInterval(fetchLatest, 2000)
-fetchLatest()
+setInterval(fetchLatestValues, 2000)
+fetchLatestValues()
