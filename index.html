@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live IoT Data â€” Voltage / Power</title>
+<style>
+    body { font-family: Arial, sans-serif; background: #111; color: #eee; margin: 0; padding: 20px; }
+    h1 { text-align: center; }
+    .cards { display: flex; justify-content: center; gap: 20px; margin: 20px 0; }
+    .card { background: #1e1e1e; border-radius: 12px; padding: 16px 28px; text-align: center; min-width: 180px; }
+    .card .label { color: #999; font-size: 14px; }
+    .card .value { font-size: 34px; font-weight: bold; }
+    .card .unit { color: #999; font-size: 16px; margin-left: 4px; }
+    table { margin: 20px auto; border-collapse: collapse; width: 100%; max-width: 640px; }
+    th, td { border: 1px solid #333; padding: 8px 12px; text-align: center; }
+    th { background: #222; color: #fd0; }
+    canvas { display: block; margin: 20px auto; background: #1e1e1e; border-radius: 12px; max-width: 100%; }
+    #status { text-align: center; color: #6f6; font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>Live IoT Data</h1>
+<div class="cards">
+    <div class="card">
+        <div class="label">Voltage</div>
+        <div><span id="voltage" class="value">--</span><span class="unit">V</span></div>
+    </div>
+    <div class="card">
+        <div class="label">Power</div>
+        <div><span id="power" class="value">--</span><span class="unit">W</span></div>
+    </div>
+</div>
+<div id="status">Ï†ÏŒÏÏ„Ï‰ÏƒÎ·â€¦</div>
+<canvas id="chart" width="640" height="220"></canvas>
+<table>
+    <thead>
+        <tr><th>#</th><th>Time</th><th>Voltage (V)</th><th>Power (W)</th></tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+</table>
+
+<script>
+const LIMIT = 10
+const DATA_URL = "https://raw.githubusercontent.com/dimpota/test/main/data.json"
+const tbody = document.getElementById("tbody")
+const statusEl = document.getElementById("status")
+const voltageEl = document.getElementById("voltage")
+const powerEl = document.getElementById("power")
+
+let last = []
+
+async function fetchData() {
+    const urls = [DATA_URL + "?t=" + Date.now(), "./data.json?t=" + Date.now()]
+    let res = null
+    for (const u of urls) {
+        try {
+            res = await fetch(u)
+            if (res.ok) break
+        } catch (e) {}
+    }
+    if (!res || !res.ok) {
+        statusEl.textContent = "no data reachable: " + urls[0]
+        return
+    }
+    last = await res.json()
+    if (!Array.isArray(last)) last = []
+    last = last.slice(-LIMIT)
+    render()
+}
+
+function fmtTime(iso) {
+    const d = new Date(iso)
+    return isNaN(d) ? iso : d.toLocaleTimeString("el-GR")
+}
+
+function render() {
+    const n = last.length
+    if (n === 0) { statusEl.textContent = "Î´ÎµÎ½ Ï…Ï€Î¬ÏÏ‡Î¿Ï…Î½ Î±ÎºÏŒÎ¼Î· Î´ÎµÎ´Î¿Î¼Î­Î½Î±"; return }
+    const latest = last[n - 1]
+    voltageEl.textContent = latest.voltage
+    powerEl.textContent = latest.power
+
+    tbody.innerHTML = ""
+    last.forEach((e, i) => {
+        const tr = document.createElement("tr")
+        tr.innerHTML = "<td>" + (n - i) + "</td><td>" + fmtTime(e.time) + "</td><td>" + e.voltage + "</td><td>" + e.power + "</td>"
+        tbody.appendChild(tr)
+    })
+    drawChart()
+    statusEl.textContent = "updated " + new Date().toLocaleTimeString("el-GR") + " â€” " + n + "/" + LIMIT + " ÏƒÎ·Î¼ÎµÎ¯Î±"
+}
+
+function drawChart() {
+    const canvas = document.getElementById("chart")
+    const ctx = canvas.getContext("2d")
+    const W = canvas.width, H = canvas.height
+    ctx.clearRect(0, 0, W, H)
+
+    drawLine(ctx, last.map(e => e.voltage), "#4fc3f7", "Voltage")
+    drawLine(ctx, last.map(e => e.power), "#ffb74d", "Power")
+}
+
+function drawLine(ctx, values, color, label) {
+    ctx.strokeStyle = color
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    const max = Math.max(...values)
+    const min = Math.min(...values)
+    const span = (max - min) || 1
+    values.forEach((v, i) => {
+        const x = (i / (values.length - 1 || 1)) * (ctx.canvas.width - 40) + 20
+        const y = 20 + (1 - (v - min) / span) * (ctx.canvas.height - 50)
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
+    })
+    ctx.stroke()
+
+    ctx.fillStyle = color
+    ctx.font = "13px Arial"
+    ctx.fillText(label, ctx.canvas.width - 70, 16)
+}
+
+setInterval(fetchData, 1000)
+fetchData()
+</script>
+</body>
+</html>
