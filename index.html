@@ -49,6 +49,7 @@ const voltageEl = document.getElementById("voltage")
 const powerEl = document.getElementById("power")
 
 let last = []
+let all = []
 
 async function fetchData() {
     const urls = [DATA_URL + "?t=" + Date.now(), "./data.json?t=" + Date.now()]
@@ -63,9 +64,9 @@ async function fetchData() {
         statusEl.textContent = "no data reachable: " + urls[0]
         return
     }
-    last = await res.json()
-    if (!Array.isArray(last)) last = []
-    last = last.slice(-LIMIT)
+    all = await res.json()
+    if (!Array.isArray(all)) all = []
+    last = all.slice(-LIMIT)
     render()
 }
 
@@ -88,7 +89,7 @@ function render() {
         tbody.appendChild(tr)
     })
     drawChart()
-    statusEl.textContent = "updated " + new Date().toLocaleTimeString("el-GR") + " â€” " + n + "/" + LIMIT + " ÏƒÎ·Î¼ÎµÎ¯Î±"
+    statusEl.textContent = "updated " + new Date().toLocaleTimeString("el-GR") + " â€” ÏƒÏÎ½Î¿Î»Î¿ " + all.length + " Î¼ÎµÏ„ÏÎ®ÏƒÎµÎ¹Ï‚ ÏƒÏ„Î¿ data.json"
 }
 
 function drawChart() {
