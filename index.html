@@ -52,16 +52,16 @@ let last = []
 let all = []
 
 async function fetchData() {
-    const urls = [DATA_URL + "?t=" + Date.now(), "./data.json?t=" + Date.now()]
+    const url = DATA_URL + "?t=" + Date.now()
     let res = null
-    for (const u of urls) {
-        try {
-            res = await fetch(u)
-            if (res.ok) break
-        } catch (e) {}
+    try {
+        res = await fetch(url)
+    } catch (e) {
+        statusEl.textContent = "server unreachable: " + DATA_URL
+        return
     }
-    if (!res || !res.ok) {
-        statusEl.textContent = "no data reachable: " + urls[0]
+    if (!res.ok) {
+        statusEl.textContent = "server error " + res.status
         return
     }
     all = await res.json()
