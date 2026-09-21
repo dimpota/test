@@ -52,10 +52,9 @@ let last = []
 let all = []
 
 async function fetchData() {
-    const url = DATA_URL + "?t=" + Date.now()
     let res = null
     try {
-        res = await fetch(url)
+        res = await fetch(DATA_URL + "?t=" + Date.now())
     } catch (e) {
         statusEl.textContent = "server unreachable: " + DATA_URL
         return
