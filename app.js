@@ -6,7 +6,9 @@ const powerElement = document.getElementById("power")
 const statusElement = document.getElementById("status")
 
 let requestInProgress = false
-
+  const requestHeaders = {
+            "Device-Token": pageToken
+        }
 
 async function fetchLatestValues() {
 
@@ -15,17 +17,10 @@ async function fetchLatestValues() {
     requestInProgress = true
 
     try {
+       
+      
 
-        // HTTP headers
-        const requestHeaders = {
-            "Device-Token": pageToken
-        }
-
-
-        // -------------------------
-        // VOLTAGE
-        // -------------------------
-
+		//VOLTAGE
         const voltageResponse = await fetch(
             tagoApi + "/data?variable=voltage&query=last_item",
             {
@@ -36,11 +31,7 @@ async function fetchLatestValues() {
         // Παίρνουμε το BODY της απάντησης
         const voltageBody = await voltageResponse.json()
 
-
-        // -------------------------
-        // POWER
-        // -------------------------
-
+		//POWER
         const powerResponse = await fetch(
             tagoApi + "/data?variable=power&query=last_item",
             {
