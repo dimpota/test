@@ -3,23 +3,12 @@ const pageToken = "042ee4ac-4e45-4c6f-ae0d-0df638b72f68"
 
 
 const voltageElement = document.getElementById("voltage")
-const powerElement = document.getElementById("power")
+const powerElement = document.getElementById(
+"power")
 const statusElement = document.getElementById("status")
 
 
 let requestInProgress = false
-
-
-function printResponse(label, response, responseText) {
-
-    console.log(
-        "tago " + label + ":",
-        response.ok
-            ? response.status + " OK"
-            : "ERROR " + response.status,
-        responseText
-    )
-}
 
 
 async function fetchLatestValues() {
@@ -112,6 +101,17 @@ async function fetchLatestValues() {
     requestInProgress = false
 }
 
+
+function printResponse(label, response, responseText) {
+
+    console.log(
+        "tago " + label + ":",
+        response.ok
+            ? response.status + " OK"
+            : "ERROR " + response.status,
+        responseText
+    )
+}
 
 setInterval(fetchLatestValues, 2000)
 
