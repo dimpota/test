@@ -8,9 +8,6 @@ const statusElement = document.getElementById("status")
 
 let requestInProgress = false
 
-const requestHeaders = {
-    "Device-Token": pageToken
-}
 
 
 async function fetchLatestValues() {
@@ -25,7 +22,7 @@ async function fetchLatestValues() {
     const voltageResponse = await fetch(
         tagoApi + "/data?variable=voltage&query=last_item",
         {
-            headers: requestHeaders
+            headers: {"Device-Token": pageToken}
         }
     )
 
