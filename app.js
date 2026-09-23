@@ -6,8 +6,20 @@ const voltageElement = document.getElementById("voltage")
 const powerElement = document.getElementById("power")
 const statusElement = document.getElementById("status")
 
+
 let requestInProgress = false
 
+
+function printResponse(label, response, responseText) {
+
+    console.log(
+        "tago " + label + ":",
+        response.ok
+            ? response.status + " OK"
+            : "ERROR " + response.status,
+        responseText
+    )
+}
 
 
 async function fetchLatestValues() {
@@ -22,17 +34,17 @@ async function fetchLatestValues() {
     const voltageResponse = await fetch(
         tagoApi + "/data?variable=voltage&query=last_item",
         {
-            headers: {"Device-Token": pageToken}
+            headers: {
+                "Device-Token": pageToken
+            }
         }
     )
 
     const voltageText = await voltageResponse.text()
 
-    console.log(
-        "tago voltage:",
-        voltageResponse.ok
-            ? voltageResponse.status + " OK"
-            : "ERROR " + voltageResponse.status,
+    printResponse(
+        "voltage",
+        voltageResponse,
         voltageText
     )
 
@@ -42,17 +54,17 @@ async function fetchLatestValues() {
     const powerResponse = await fetch(
         tagoApi + "/data?variable=power&query=last_item",
         {
-            headers: {"Device-Token": pageToken}
+            headers: {
+                "Device-Token": pageToken
+            }
         }
     )
 
     const powerText = await powerResponse.text()
 
-    console.log(
-        "tago power:",
-        powerResponse.ok
-            ? powerResponse.status + " OK"
-            : "ERROR " + powerResponse.status,
+    printResponse(
+        "power",
+        powerResponse,
         powerText
     )
 
@@ -74,10 +86,12 @@ async function fetchLatestValues() {
         !voltageBody.result[0] ||
         !powerBody.result[0]
     ) {
+
         statusElement.textContent =
             "περιμένω δεδομένα από το TagoIO…"
 
         requestInProgress = false
+
         return
     }
 
