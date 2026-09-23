@@ -42,7 +42,7 @@ async function fetchLatestValues() {
     const powerResponse = await fetch(
         tagoApi + "/data?variable=power&query=last_item",
         {
-            headers: requestHeaders
+            headers: {"Device-Token": pageToken}
         }
     )
 
